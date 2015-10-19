@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hold Them or Fold Them</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Hold Them or Fold Them">
+  <meta name="author" content="Bradley Shanrock-Solberg">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/zenburn.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Hold Them or Fold Them</h1>
+    <h2>Analyzing Stud Poker With Wildcards</h2>
+    <p>Bradley Shanrock-Solberg<br/>Freelance Data Scientist</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <article data-timings="">
+    <style> 
+  .title-slide {
+  background-image: url(http://pokernewsboy.com/wordpress/wp-content/uploads/2011/06/7-card-stud.jpg);
+  background-repeat: repeat-x; 
+  background-color: #0B6138; /*#0B6121 #0B610B;#0B3B17*/
+  }
+  .title-slide hgroup > h1, 
+  .title-slide hgroup > h2,
+  .title-slide hgroup > p
+  {
+    color: goldenrod;
+  }
+  body {
+    background-color: #0B6138;
+  }
+  slide {
+    background-color: #E6F8E0;
+  }
+</style>
+
+<h2>Hand Value in Stud Poker - the Key to Victory</h2>
+
+<h3>Basic Poker Strategy -  requires accurate Hand Value estimation</h3>
+
+<ul>
+<li>My Hand:  How good is my hand already, and what are the odds of making it better?</li>
+<li>Expense:  Is my hand good enough to put more money in the pot and draw another card?<br></li>
+<li>Other Hands:  Are any hands either already better or likely to beat me if they keep drawing?</li>
+<li>Stud Poker&#39;s 4-5 betting rounds &amp; visible cards leaves more scope for skill 
+than <a href="https://en.wikipedia.org/wiki/Draw_poker">Draw Poker</a></li>
+</ul>
+
+<h3>What affects Hand Value?</h3>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/5_Card_Stud">5 card stud</a> wins with much weaker hands 
+than  <a href="https://en.wikipedia.org/wiki/Seven-card_stud">7 card stud</a>
+or <a href="https://en.wikipedia.org/wiki/Texas_hold_&#x27;em">Texas Hold-Em</a></li>
+<li>In a professional/casino game, # of players can shift suddenly, wildcards are banned</li>
+<li>in a private &quot;friendly&quot; game, # of wildcards can shift suddenly, but players are fixed</li>
+<li>The <a href="https://solbergb.shinyapps.io/pokerapp">Hold Them or Fold Them</a> application explores
+how Stud Poker hand values change</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Example: Testing Hand Value by Game</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="https://solbergb.shinyapps.io/pokerapp">Hold Them or Fold Them</a>
+tests <a href="https://en.wikipedia.org/wiki/5_Card_Stud">5 card stud</a> 
+vs  <a href="https://en.wikipedia.org/wiki/Texas_hold_&#x27;em">Texas Hold-Em</a> with 4 players
+and 0 wildcards.</p>
+
+<div style='float:left;width:48%;' class='centered'>
+  <p><img src="assets/fig/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1"> </p>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="assets/fig/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2"> </p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Example: Testing Hand Value by Number of Players</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="https://solbergb.shinyapps.io/pokerapp">Hold Them or Fold Them</a>
+tests 2 vs 7 players of <a href="https://en.wikipedia.org/wiki/Seven-card_stud">7 card stud</a> 
+with 0 wildcards.</p>
+
+<div style='float:left;width:48%;' class='centered'>
+  <p><img src="assets/fig/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3"> </p>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="assets/fig/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4"> </p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Example: Testing Hand Value by Wildcards</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="https://solbergb.shinyapps.io/pokerapp">Hold Them or Fold Them</a>
+tests 4 players of <a href="https://en.wikipedia.org/wiki/Texas_hold_&#x27;em">Texas Hold-Em</a>, 
+normal vs Jokers &amp; Dueces Wild.</p>
+
+<div style='float:left;width:48%;' class='centered'>
+  <p><img src="assets/fig/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"> </p>
+
+</div>
+<div style='float:right;width:48%;'>
+  <p><img src="assets/fig/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"> </p>
+
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='NA'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Example: Testing Hand Value by Game'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Example: Testing Hand Value by Number of Players'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Example: Testing Hand Value by Wildcards'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
