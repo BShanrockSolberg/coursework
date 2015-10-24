@@ -1,0 +1,125 @@
+# Predictive Model for Human Activity Recognition
+#### By Bradley Shanrock-Solberg
+## Objective
+Create a model to predict "classe" outcomes for test data based 
+on training data provided for the exercise.  The training data
+and test results are based on a this 
+[Human Activity Prediction study](http://groupware.les.inf.puc-rio.br/har).
+
+## Loading and Preprocessing the Data
+
+Downloaded the files into working directory and loaded into data frames.
+```{R}
+require(caret)
+haTrain <- read.csv("pml-training.csv")
+haTest <- read.csv("pml-testing.csv")
+```
+After a basic look at the data using the "str()" command,
+a large number of observations had missing data in many
+columns.  This code is used to identify the problem columns,
+which have 19216 of 19612 rows populated with either NA or "".
+```{R}
+dim(haTrain)
+table(sapply(as.data.frame(is.na(haTrain)),sum))
+table(sapply(as.data.frame(haTrain == ""),sum))
+trainVar <- names(haTrain[, sapply(as.data.frame(is.na(haTrain)),sum) == 0
+                            & sapply(as.data.frame(haTrain == ""),sum) == 0])
+trainVar
+```
+trainVar now includes 59 variables and 1 column ("classe") of outcomes.
+52 of these variables are actual physical measurements and one is based on
+the subject name.  As the exercises might involve different accelerations
+for different subjects (due to arm length, typical speed of motion, etc)
+the subject name should remain.  Of the remaining:
+* "X" is just a counter variable, unique for each observation
+* 3 "timestamp" variables are probably not important for predicting activity
+* "window" variables seem to indicate start and duration of a batch of activity 
+
+In my judgement, none of these are useful to predict motion, as in theory the
+time an exercise was done or which trial it might have been for each subject
+should not matter for predicting activity and if they happen to have predictive
+value within the data set, such "value" would serve only to cause overfitting
+because any future measurements will be for a later time period, not included 
+in the training data set.
+
+Therefore these variables also must be excluded from the list of trainng columns.
+```{R}
+removeVar <- c("X","raw_timestamp_part_1", "raw_timestamp_part_2", 
+               "cvtd_timestamp", "new_window", "num_window")
+trainCol <- NULL
+for (i in 1:length(trainVar)) {
+  if (length(grep(trainVar[i], removeVar)) == 0) {
+     trainCol <- c(trainCol, trainVar[i])
+  } # end of exclude removal variables from the training list
+} # end of loop through training variable list
+length(trainCol) # includes only "classe" and useful training variables
+```
+
+## Training the Model
+Split the data into test and training groups:
+```{R}
+table(haTrain$classe)
+inTrain <- createDataPartition(y = haTrain$classe, p = .75, list=FALSE)
+training <- haTrain[inTrain, ]
+testing <- haTrain[-inTrain, ]
+table(training$classe)
+table(testing$classe)
+```
+### Model Selection
+**lm** is inappropriate because the outcome is factors, not a fitted curve.
+
+**glm** is inapporpriate because it can only work with binary factors
+
+Some kind of **Tree Model** seemed best, as that has a natural tendency
+to divide data into discrete buckets.  Start with a simple tree model:
+
+```
+set.seed(1000)
+rpFit <- train(classe~., data = training[, trainCol], method = "rpart")
+rpFit
+table(predict(rpFit, newdata=training))
+```
+```{R echo=FALSE}
+# the model is not recalculated when the Rmd is generated as it takes 
+# 15 minuts to run.  The above command was used to generate "rpFit"
+rpFit
+table(predict(rpFit, newdata=training))
+```
+
+While this model did very poorly (internal error rate estimated by kappa 
+to be only .43), the problem looked like it might be tied the order of 
+the initial cut (too many things bucketed to "C" early on.)   
+
+The next step is to add bootstrap aggreggation to the basic tree model
+as that might help it choose different tree paths that work through 
+more of the training data set.  A quick search of models in this category
+turned up the **treebag** method.
+
+```
+tbFit <- train(classe~., data = training[, trainCol], method = "treebag")
+tbFit
+```
+```{R echo=FALSE}
+# the model is not recalculated when the Rmd is generated as it takes hours
+# to run.  The above command was used to generate the variable "tbFit"
+tbFit
+table(predict(tbFit, newdata=training))
+```
+This had a kappa value of over 97% for the training data, so I decided
+to try this model out on the testing portion and see how it performed:
+
+```{R}
+ confusionMatrix(predict(tbFit, newdata = testing), testing$classe)
+```
+The kappa value for external error rate was even better for the 
+testing data than the training data, and as this estimate of the 
+external error rate > .99 there did not seem to be much value in 
+trying to look for a stronger model when the objective was to 
+answer only 20 test cases.  
+
+## Outcome
+This model proved successful in predicting all 20 test case activity
+factors correctly.
+
+
+
